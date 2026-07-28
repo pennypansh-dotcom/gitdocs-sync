@@ -190,6 +190,44 @@ This keeps the MVP predictable and prevents one huge Markdown file from consumin
 
 See `examples/docusaurus-demo`, `docs/github-test-repo-setup.md`, `docs/live-dry-run.md`, `docs/live-smoke-runbook.md`, and `docs/troubleshooting.md`.
 
+## How GitDocs Sync Compares
+
+| | Manual | Crowdin / TMS | GitDocs Sync |
+|---|---|---|---|
+| Setup time | none | hours–days | ~3 min |
+| Who reviews | whoever remembers to | dedicated translators | anyone, via normal PR |
+| Cost model | your time | seats / word volume | per translated doc |
+| Re-translates unchanged content? | no (if you remember) | depends on config | no, by design |
+| Best fit | tiny docs, 1 language | big team, human translators | solo/small teams, technical docs |
+
+GitDocs Sync is not a replacement for a translation management platform. If you have dedicated translators and a formal localization workflow, a TMS like Crowdin or Lokalise is still the right tool. GitDocs Sync is for teams that just want their Docusaurus docs to stop drifting out of sync across languages, and prefer reviewing translation changes through the same PR workflow they already use.
+
+## FAQ
+
+### Does this replace a translation management platform for large teams?
+
+No — if you have dedicated translators and a formal localization workflow, a TMS is still the right tool. This is for teams that don't have that and just want the docs to stop drifting.
+
+### What happens to code blocks and links?
+
+They're left untouched. Only the prose gets sent for translation; Markdown/MDX structure, front matter, and code fences are protected.
+
+### Does it re-translate the whole file every time?
+
+No — that's the whole point. Only the changed paragraphs get sent for translation; unchanged content is skipped and translation memory covers repeats.
+
+### Is it free for open source?
+
+Yes. Public repositories use GitDocs Sync for free. The Free plan covers up to 30 documents, 1 target language, and 1 repository. Pro and Team plans are available for larger needs.
+
+### What languages work best?
+
+DeepSeek handles Chinese translation natively. OpenAI covers all other languages. For languages with fewer training resources, a human review pass is recommended before publishing.
+
+### Where does GitDocs Sync fit in the Docusaurus ecosystem?
+
+Docusaurus does not have an official i18n translation tool — the community is free to build tooling. GitDocs Sync fills that gap as a community-built GitHub Action that outputs directly into Docusaurus' standard `i18n/{locale}/docusaurus-plugin-content-docs/current/` directory structure.
+
 ## Development
 
 Run tests:
