@@ -1,5 +1,5 @@
-name: GitDocs Sync
-description: Auto-sync Docusaurus docs translations through GitHub Issues and PRs.
+name: GitDocs Sync — Docusaurus i18n & Docs Translation
+description: "AI-powered Docusaurus i18n and markdown documentation translation. Diff-based: only translates changed paragraphs to keep costs low. Translation memory ensures consistent terminology. Auto-creates PRs for human review. Supports DeepSeek (native-quality Chinese) and OpenAI. Free for open source."
 branding:
   icon: languages
   color: green
