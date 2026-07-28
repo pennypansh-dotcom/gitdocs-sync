@@ -1,17 +1,20 @@
-function createProviderRouter({ deepseek, openai }) {
+function createProviderRouter({ deepseek, openai, custom }) {
   return {
     async translate(request) {
       const result = await this.translateWithUsage(request);
       return result.text;
     },
     async translateWithUsage(request) {
+      if (custom) {
+        return translateWithProvider(custom, request);
+      }
       const useDeepSeek = shouldUseDeepSeek(request);
       const provider = useDeepSeek ? deepseek : openai;
       const fallbackProvider = useDeepSeek ? openai : deepseek;
       if (!provider) {
         const keyName = useDeepSeek ? "DEEPSEEK_API_KEY" : "OPENAI_API_KEY";
         throw new Error(
-          `No translation provider is configured for ${request.sourceLang}->${request.targetLang}. Add ${keyName} as a GitHub repository secret and rerun GitDocs Sync.`,
+          `No translation provider is configured for ${request.sourceLang}->${request.targetLang}. Add ${keyName} as a GitHub repository secret, or set GITDOCS_API_KEY with GITDOCS_API_BASE_URL for a custom provider.`,
         );
       }
       try {
@@ -63,6 +66,23 @@ function createOpenAIProvider({ apiKey, fetch = globalThis.fetch, model = "gpt-4
     model,
     provider: "openai",
     url: `${resolvedBaseUrl}/v1/chat/completions`,
+    timeoutMs,
+  });
+}
+
+function createCustomProvider({ apiKey, fetch = globalThis.fetch, baseUrl, model, timeoutMs = 30000 }) {
+  if (!baseUrl) {
+    throw new Error("GITDOCS_API_BASE_URL is required when using GITDOCS_API_KEY.");
+  }
+  const url = baseUrl.endsWith("/chat/completions")
+    ? baseUrl
+    : `${baseUrl.replace(/\/+$/, "")}/chat/completions`;
+  return createChatProvider({
+    apiKey,
+    fetch,
+    model: model || "gpt-4o-mini",
+    provider: "custom",
+    url,
     timeoutMs,
   });
 }
@@ -169,4 +189,4 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-module.exports = { createDeepSeekProvider, createOpenAIProvider, createProviderRouter };
+module.exports = { createCustomProvider, createDeepSeekProvider, createOpenAIProvider, createProviderRouter };

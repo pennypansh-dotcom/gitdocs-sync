@@ -1,7 +1,7 @@
 const { readFileSync } = require("node:fs");
 const { runGitDocsSync } = require("./gitdocs-sync");
 const { createGitHubApiAdapter } = require("./github-api");
-const { createDeepSeekProvider, createOpenAIProvider, createProviderRouter } = require("./providers");
+const { createCustomProvider, createDeepSeekProvider, createOpenAIProvider, createProviderRouter } = require("./providers");
 
 async function main() {
   const repoDir = process.cwd();
@@ -99,6 +99,16 @@ function createGitHubAdapterFromEnv() {
 }
 
 function createTranslatorFromEnv() {
+  const customApiKey = process.env.GITDOCS_API_KEY || process.env.INPUT_API_KEY;
+  if (customApiKey) {
+    return createProviderRouter({
+      custom: createCustomProvider({
+        apiKey: customApiKey,
+        baseUrl: process.env.GITDOCS_API_BASE_URL,
+        model: process.env.GITDOCS_API_MODEL,
+      }),
+    });
+  }
   return createProviderRouter({
     deepseek: process.env.DEEPSEEK_API_KEY
       ? createDeepSeekProvider({

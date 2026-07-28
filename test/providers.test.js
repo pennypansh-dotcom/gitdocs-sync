@@ -1,7 +1,7 @@
 const assert = require("node:assert/strict");
 const test = require("node:test");
 
-const { createDeepSeekProvider, createOpenAIProvider, createProviderRouter } = require("../src/providers");
+const { createCustomProvider, createDeepSeekProvider, createOpenAIProvider, createProviderRouter } = require("../src/providers");
 
 test("provider router uses DeepSeek for Chinese target language", async () => {
   const calls = [];
@@ -332,4 +332,83 @@ test("DeepSeek provider respects custom model override", async () => {
   await provider.translate({ sourceLang: "en", targetLang: "zh", content: "Hello docs" });
 
   assert.equal(calls[0].body.model, "deepseek-reasoner");
+});
+
+test("custom provider routes all translation through a single user-configured endpoint", async () => {
+  const calls = [];
+  const fetch = async (url, options) => {
+    calls.push({ url, headers: options.headers, body: JSON.parse(options.body) });
+    return {
+      ok: true,
+      async json() {
+        return { choices: [{ message: { content: "Custom translation" } }] };
+      },
+      async text() {
+        return "";
+      },
+    };
+  };
+  const provider = createCustomProvider({
+    apiKey: "my-key",
+    fetch,
+    baseUrl: "https://api.my-llm.com/v1",
+    model: "my-custom-model",
+  });
+
+  const result = await provider.translate({ sourceLang: "en", targetLang: "zh", content: "Hello docs" });
+
+  assert.equal(result, "Custom translation");
+  assert.equal(calls[0].url, "https://api.my-llm.com/v1/chat/completions");
+  assert.equal(calls[0].headers.Authorization, "Bearer my-key");
+  assert.equal(calls[0].body.model, "my-custom-model");
+});
+
+test("custom provider handles baseUrl with trailing slash", async () => {
+  const calls = [];
+  const fetch = async (url) => {
+    calls.push({ url });
+    return {
+      ok: true,
+      async json() {
+        return { choices: [{ message: { content: "Test" } }] };
+      },
+      async text() {
+        return "";
+      },
+    };
+  };
+  const provider = createCustomProvider({
+    apiKey: "key",
+    fetch,
+    baseUrl: "https://api.example.com/",
+    model: "test-model",
+  });
+
+  await provider.translate({ sourceLang: "en", targetLang: "fr", content: "Hello" });
+
+  assert.equal(calls[0].url, "https://api.example.com/chat/completions");
+});
+
+test("provider router uses custom provider for all languages when configured", async () => {
+  const calls = [];
+  const translator = createProviderRouter({
+    custom: {
+      async translateWithUsage(request) {
+        calls.push(request.targetLang);
+        return { text: `custom-${request.content}`, usage: {} };
+      },
+    },
+    deepseek: {
+      async translate() {
+        throw new Error("DeepSeek should not be called when custom is set");
+      },
+    },
+  });
+
+  const result1 = await translator.translate({ sourceLang: "en", targetLang: "zh", content: "Hello" });
+  const result2 = await translator.translate({ sourceLang: "en", targetLang: "fr", content: "Hello" });
+
+  assert.equal(result1, "custom-Hello");
+  assert.equal(result2, "custom-Hello");
+  assert.deepEqual(calls, ["zh", "fr"]);
 });

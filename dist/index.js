@@ -4091,7 +4091,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 const { readFileSync } = __nccwpck_require__(24);
 const { runGitDocsSync } = __nccwpck_require__(832);
 const { createGitHubApiAdapter } = __nccwpck_require__(587);
-const { createDeepSeekProvider, createOpenAIProvider, createProviderRouter } = __nccwpck_require__(619);
+const { createCustomProvider, createDeepSeekProvider, createOpenAIProvider, createProviderRouter } = __nccwpck_require__(619);
 
 async function main() {
   const repoDir = process.cwd();
@@ -4189,6 +4189,16 @@ function createGitHubAdapterFromEnv() {
 }
 
 function createTranslatorFromEnv() {
+  const customApiKey = process.env.GITDOCS_API_KEY || process.env.INPUT_API_KEY;
+  if (customApiKey) {
+    return createProviderRouter({
+      custom: createCustomProvider({
+        apiKey: customApiKey,
+        baseUrl: process.env.GITDOCS_API_BASE_URL,
+        model: process.env.GITDOCS_API_MODEL,
+      }),
+    });
+  }
   return createProviderRouter({
     deepseek: process.env.DEEPSEEK_API_KEY
       ? createDeepSeekProvider({
@@ -5644,20 +5654,23 @@ module.exports = { createGitHubApiAdapter };
 /***/ 619:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-function createProviderRouter({ deepseek, openai }) {
+function createProviderRouter({ deepseek, openai, custom }) {
   return {
     async translate(request) {
       const result = await this.translateWithUsage(request);
       return result.text;
     },
     async translateWithUsage(request) {
+      if (custom) {
+        return translateWithProvider(custom, request);
+      }
       const useDeepSeek = shouldUseDeepSeek(request);
       const provider = useDeepSeek ? deepseek : openai;
       const fallbackProvider = useDeepSeek ? openai : deepseek;
       if (!provider) {
         const keyName = useDeepSeek ? "DEEPSEEK_API_KEY" : "OPENAI_API_KEY";
         throw new Error(
-          `No translation provider is configured for ${request.sourceLang}->${request.targetLang}. Add ${keyName} as a GitHub repository secret and rerun GitDocs Sync.`,
+          `No translation provider is configured for ${request.sourceLang}->${request.targetLang}. Add ${keyName} as a GitHub repository secret, or set GITDOCS_API_KEY with GITDOCS_API_BASE_URL for a custom provider.`,
         );
       }
       try {
@@ -5709,6 +5722,23 @@ function createOpenAIProvider({ apiKey, fetch = globalThis.fetch, model = "gpt-4
     model,
     provider: "openai",
     url: `${resolvedBaseUrl}/v1/chat/completions`,
+    timeoutMs,
+  });
+}
+
+function createCustomProvider({ apiKey, fetch = globalThis.fetch, baseUrl, model, timeoutMs = 30000 }) {
+  if (!baseUrl) {
+    throw new Error("GITDOCS_API_BASE_URL is required when using GITDOCS_API_KEY.");
+  }
+  const url = baseUrl.endsWith("/chat/completions")
+    ? baseUrl
+    : `${baseUrl.replace(/\/+$/, "")}/chat/completions`;
+  return createChatProvider({
+    apiKey,
+    fetch,
+    model: model || "gpt-4o-mini",
+    provider: "custom",
+    url,
     timeoutMs,
   });
 }
@@ -5815,7 +5845,7 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-module.exports = { createDeepSeekProvider, createOpenAIProvider, createProviderRouter };
+module.exports = { createCustomProvider, createDeepSeekProvider, createOpenAIProvider, createProviderRouter };
 
 
 /***/ }),

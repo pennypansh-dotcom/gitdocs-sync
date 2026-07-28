@@ -132,26 +132,48 @@ The launch MVP uses manual registration and manual provisioning. OAuth login, da
 
 ## Provider Keys
 
-- Chinese directions use DeepSeek: add `DEEPSEEK_API_KEY`.
-- Non-Chinese directions use OpenAI: add `OPENAI_API_KEY` later when you enable those target languages.
+GitDocs Sync supports any LLM provider with an OpenAI-compatible chat completions API. You have two options:
 
-### Custom Provider Endpoints
+### Option A: Custom Provider (recommended — use any model)
 
-Both providers support `baseUrl` and `model` overrides via environment variables, useful for API proxies, Azure OpenAI, or self-hosted endpoints:
+Set a single API key, base URL, and model name. All translation directions use this provider.
 
-| Secret | Purpose | Default |
+| Secret | Required | Description |
 |---|---|---|
-| `DEEPSEEK_BASE_URL` | Override DeepSeek API base URL | `https://api.deepseek.com` |
-| `DEEPSEEK_MODEL` | Override DeepSeek model name | `deepseek-chat` |
-| `OPENAI_BASE_URL` | Override OpenAI API base URL | `https://api.openai.com` |
-| `OPENAI_MODEL` | Override OpenAI model name | `gpt-4o-mini` |
+| `GITDOCS_API_KEY` | Yes | Your API key |
+| `GITDOCS_API_BASE_URL` | Yes | API base URL (e.g. `https://api.openai.com/v1`, `https://api.deepseek.com`, `https://api.anthropic.com/v1`, `https://api.moonshot.cn/v1`) |
+| `GITDOCS_API_MODEL` | No | Model name (default: `gpt-4o-mini`) |
 
-Example workflow snippet for a proxy:
+Works with: OpenAI, DeepSeek, Claude, Moonshot/Kimi, Qwen, Zhipu, Ollama, LM Studio, any OpenAI-compatible endpoint.
+
+### Option B: DeepSeek + OpenAI (legacy auto-routing)
+
+Chinese directions use DeepSeek, non-Chinese use OpenAI. Both are optional and can serve as fallback for each other.
+
+| Secret | Purpose |
+|---|---|
+| `DEEPSEEK_API_KEY` | Chinese translation |
+| `OPENAI_API_KEY` | Non-Chinese translation |
+| `DEEPSEEK_BASE_URL` | Override DeepSeek endpoint |
+| `DEEPSEEK_MODEL` | Override DeepSeek model |
+| `OPENAI_BASE_URL` | Override OpenAI endpoint |
+| `OPENAI_MODEL` | Override OpenAI model |
+
+### Example: Custom Provider
+
+```yml
+env:
+  GITDOCS_API_KEY: ${{ secrets.GITDOCS_API_KEY }}
+  GITDOCS_API_BASE_URL: ${{ secrets.GITDOCS_API_BASE_URL }}
+  GITDOCS_API_MODEL: ${{ secrets.GITDOCS_API_MODEL }}
+```
+
+### Example: DeepSeek + OpenAI
 
 ```yml
 env:
   DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-  DEEPSEEK_BASE_URL: ${{ secrets.DEEPSEEK_PROXY_URL }}
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 ```
 
 ## Cost Protection
