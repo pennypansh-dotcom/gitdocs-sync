@@ -1,5 +1,5 @@
 name: GitDocs Sync - Docusaurus i18n Translation
-description: "Diff-based AI translation for Docusaurus docs. Translates only changed paragraphs. Translation memory for consistent terms. Auto PRs for review. Free for open source."
+description: "AI-powered Docusaurus i18n translation. Diff-based: changed content only. Translation memory. Free for open source."
 branding:
   icon: languages
   color: green
