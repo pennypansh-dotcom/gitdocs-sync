@@ -5,6 +5,7 @@ const { tmpdir } = require("node:os");
 const test = require("node:test");
 
 const {
+  checkRevocation,
   createGitHubAdapterFromEnv,
   formatActionError,
   parseLicenseKey,
@@ -201,6 +202,66 @@ test("published GitHub Action includes Marketplace branding metadata", () => {
   assert.match(actionYaml, /icon:\s+languages/);
   assert.match(actionYaml, /color:\s+green/);
   assert.match(actionYaml, /Auto-sync Docusaurus docs translations/);
+});
+
+test("checkRevocation throws when key is in revoked list", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({
+    ok: true,
+    async json() {
+      return { revoked_keys: ["gds_pro_202607_acme_abc123def456"] };
+    },
+  });
+  try {
+    await assert.rejects(
+      checkRevocation("gds_pro_202607_acme_abc123def456"),
+      /revoked/,
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("checkRevocation passes when key is not in revoked list", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({
+    ok: true,
+    async json() {
+      return { revoked_keys: ["gds_pro_202607_other_abc123def456"] };
+    },
+  });
+  try {
+    await checkRevocation("gds_pro_202607_acme_abc123def456");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("checkRevocation passes when fetch fails (network tolerance)", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => {
+    throw new Error("Network error");
+  };
+  try {
+    await checkRevocation("gds_pro_202607_acme_abc123def456");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("checkRevocation passes when revoked list is empty", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({
+    ok: true,
+    async json() {
+      return { revoked_keys: [] };
+    },
+  });
+  try {
+    await checkRevocation("gds_pro_202607_acme_abc123def456");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 function restoreEnv(name, value) {

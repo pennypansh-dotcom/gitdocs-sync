@@ -4097,12 +4097,35 @@ async function main() {
   const repoDir = process.cwd();
   const event = readGitHubEventFromFile(process.env.GITHUB_EVENT_NAME || "workflow_dispatch", process.env.GITHUB_EVENT_PATH);
   applyActionInputs();
-  const license = parseLicenseKey(requireLicenseKeyFromEnv());
+  const licenseKey = requireLicenseKeyFromEnv();
+  await checkRevocation(licenseKey);
+  const license = parseLicenseKey(licenseKey);
   process.env.GITDOCS_PLAN = license.plan;
   const github = createGitHubAdapterFromEnv();
   const translator = createTranslatorFromEnv();
   const result = await runGitDocsSync({ repoDir, github, translator, event });
   console.log(`GitDocs Sync finished: ${result.status}`);
+}
+
+const REVOKED_KEYS_URL = "https://raw.githubusercontent.com/pennypansh-dotcom/gitdocs-sync/main/revoked-keys.json";
+
+async function checkRevocation(licenseKey) {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    const response = await fetch(REVOKED_KEYS_URL, { signal: controller.signal });
+    clearTimeout(timeout);
+    if (!response.ok) return;
+    const data = await response.json();
+    const revokedKeys = data.revoked_keys || [];
+    if (revokedKeys.includes(licenseKey)) {
+      throw new Error("This GitDocs Sync license key has been revoked. If you believe this is an error or you need a new key, contact pawsitiveme@outlook.com.");
+    }
+  } catch (error) {
+    if (error.message && error.message.includes("revoked")) {
+      throw error;
+    }
+  }
 }
 
 function applyActionInputs() {
@@ -4219,7 +4242,7 @@ function unique(values) {
   return [...new Set(values)];
 }
 
-module.exports = { createGitHubAdapterFromEnv, formatActionError, parseLicenseKey, readGitHubEventFromFile, requireLicenseKeyFromEnv };
+module.exports = { checkRevocation, createGitHubAdapterFromEnv, formatActionError, parseLicenseKey, readGitHubEventFromFile, requireLicenseKeyFromEnv };
 
 
 /***/ }),

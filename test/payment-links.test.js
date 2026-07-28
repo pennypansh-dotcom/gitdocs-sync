@@ -30,7 +30,7 @@ test("payment link configurator swaps Pro and Team buttons to Stripe links", () 
     const html = readFileSync(join(siteDir, file), "utf8");
     assert.match(html, /data-plan-link="pro" href="https:\/\/buy\.stripe\.com\/pro_test"/);
     assert.match(html, /data-plan-link="team" href="https:\/\/buy\.stripe\.com\/team_test"/);
-    assert.match(html, /GitDocs%20Sync%20Enterprise/);
+    assert.match(html, /openContactModal/);
   }
 });
 

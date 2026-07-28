@@ -164,7 +164,7 @@
             <h3>Enterprise</h3>
             <p class="price">定制</p>
             <p>更高额度、采购支持和定制接入协助。</p>
-            <a class="button secondary" href="mailto:pawsitiveme@outlook.com?subject=GitDocs%20Sync%20Enterprise">联系我们</a>
+            <a class="button secondary" onclick="openContactModal()">联系我们</a>
           </article>
         </div>
       </section>
@@ -218,5 +218,27 @@ env:
       <p><a href="mailto:pawsitiveme@outlook.com">pawsitiveme@outlook.com</a></p>
       <p>© 2026 GitDocs Sync. 保留所有权利。</p>
     </footer>
-  </body>
+    <div class="contact-overlay" id="contactOverlay" onclick="if(event.target===this)closeContactModal()">
+      <div class="contact-modal">
+        <h3>联系我们</h3>
+        <p>Enterprise 定价、自定义额度或任何关于 GitDocs Sync 的问题，请通过以下邮箱联系：</p>
+        <a class="contact-email" href="mailto:pawsitiveme@outlook.com">pawsitiveme@outlook.com</a>
+        <button class="contact-close" onclick="closeContactModal()">关闭</button>
+      </div>
+    </div>
+
+    <script>
+      function openContactModal() {
+        document.getElementById('contactOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeContactModal() {
+        document.getElementById('contactOverlay').classList.remove('active');
+        document.body.style.overflow = '';
+      }
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeContactModal();
+      });
+    </script>
+    </body>
 </html>
