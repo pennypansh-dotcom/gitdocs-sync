@@ -402,3 +402,84 @@ pre code {
     width: 100%;
   }
 }
+
+/* ============ CONTACT MODAL ============ */
+.contact-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.contact-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+.contact-modal {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  max-width: 420px;
+  width: 90%;
+  padding: 32px 28px;
+  text-align: center;
+  transform: scale(0.95);
+  transition: transform 0.2s ease;
+}
+
+.contact-overlay.active .contact-modal {
+  transform: scale(1);
+}
+
+.contact-modal h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 12px;
+  color: var(--ink);
+}
+
+.contact-modal p {
+  font-size: 15px;
+  color: var(--muted);
+  margin: 0 0 20px;
+  line-height: 1.6;
+}
+
+.contact-modal .contact-email {
+  display: inline-block;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--green);
+  text-decoration: none;
+  padding: 10px 24px;
+  border: 2px solid var(--green);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.contact-modal .contact-email:hover {
+  background: var(--green);
+  color: var(--white);
+}
+
+.contact-modal .contact-close {
+  display: block;
+  margin: 8px auto 0;
+  font-size: 14px;
+  color: var(--text-4);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 8px 16px;
+}
+
+.contact-modal .contact-close:hover {
+  color: var(--ink);
+}
