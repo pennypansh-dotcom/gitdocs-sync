@@ -1,0 +1,19 @@
+name: GitDocs Sync
+description: Auto-sync Docusaurus docs translations through GitHub Issues and PRs.
+branding:
+  icon: languages
+  color: green
+inputs:
+  github_token:
+    description: GitHub token with contents, pull-requests, and issues write permissions.
+    required: true
+  dry_run:
+    description: Plan the sync without creating translation PRs or calling translation providers.
+    required: false
+    default: "false"
+  license_key:
+    description: GitDocs Sync license key. Free and dry-run usage also require a key.
+    required: false
+runs:
+  using: node20
+  main: dist/index.js

@@ -1,0 +1,26 @@
+{
+  "name": "gitdocs-sync",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Git-native Docusaurus documentation translation sync MVP.",
+  "scripts": {
+    "build": "ncc build src/action.js -o dist --source-map",
+    "payment:links": "node scripts/configure-payment-links.js",
+    "site:url": "node scripts/configure-site-url.js",
+    "launch:configure": "node scripts/configure-launch-day.js",
+    "launch:validate": "node scripts/validate-launch-inputs.js",
+    "smoke:validate": "node scripts/validate-smoke-repo.js",
+    "license": "node scripts/generate-license-key.js",
+    "release:check": "node scripts/verify-release-ready.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.44.1"
+  }
+}

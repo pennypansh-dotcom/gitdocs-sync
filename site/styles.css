@@ -1,0 +1,404 @@
+:root {
+  color-scheme: light;
+  --ink: #1c2329;
+  --muted: #596169;
+  --paper: #fafaf6;
+  --band: #eef3ec;
+  --line: #d6ddd3;
+  --green: #1f8450;
+  --green-dark: #17643d;
+  --teal: #187380;
+  --rust: #9c4b37;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-header {
+  align-items: center;
+  background: rgba(250, 250, 246, 0.94);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  height: 64px;
+  justify-content: space-between;
+  left: 0;
+  padding: 0 clamp(20px, 5vw, 72px);
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 10;
+}
+
+.brand {
+  font-weight: 800;
+}
+
+nav {
+  display: flex;
+  gap: clamp(14px, 3vw, 28px);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.language-link {
+  color: var(--green-dark);
+}
+
+.hero {
+  min-height: 92vh;
+  padding: 142px clamp(20px, 5vw, 72px) 58px;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  gap: 48px;
+  text-align: center;
+}
+
+.hero-copy {
+  color: var(--ink);
+  max-width: 930px;
+}
+
+.eyebrow {
+  color: var(--rust);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  font-size: clamp(64px, 10vw, 132px);
+  line-height: 0.92;
+  margin-bottom: 22px;
+}
+
+h2 {
+  font-size: clamp(30px, 4vw, 52px);
+  line-height: 1.05;
+  margin-bottom: 18px;
+  max-width: 840px;
+}
+
+h3 {
+  font-size: 20px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+.hero-subtitle {
+  color: var(--muted);
+  font-size: clamp(22px, 2.8vw, 34px);
+  line-height: 1.2;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 920px;
+}
+
+.hero-actions,
+.install-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.hero-actions {
+  justify-content: center;
+}
+
+.hero-media {
+  max-width: 1120px;
+  width: min(100%, 1120px);
+}
+
+.hero-media img {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: 0 28px 90px rgba(28, 35, 41, 0.12);
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.button {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  display: inline-flex;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 16px;
+}
+
+.button.primary {
+  background: var(--green);
+  color: var(--white);
+}
+
+.button.primary:hover {
+  background: var(--green-dark);
+}
+
+.button.secondary {
+  background: var(--white);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.section-inner {
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 84px clamp(20px, 5vw, 40px);
+}
+
+.band {
+  background: var(--band);
+  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+}
+
+.problem-grid,
+.proof-grid,
+.install-grid {
+  display: grid;
+  gap: 42px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+}
+
+.problem-grid > p,
+.install-grid > div > p {
+  color: var(--muted);
+  font-size: 20px;
+}
+
+.section-heading {
+  margin-bottom: 30px;
+}
+
+.steps,
+.plans {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.steps article,
+.plan {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  min-height: 220px;
+  padding: 24px;
+}
+
+.steps p,
+.plan p,
+.check-list {
+  color: var(--muted);
+}
+
+.step-number {
+  align-items: center;
+  background: #e5f0df;
+  border-radius: 999px;
+  color: var(--green-dark);
+  display: inline-flex;
+  font-weight: 850;
+  height: 34px;
+  justify-content: center;
+  margin-bottom: 22px;
+  width: 34px;
+}
+
+.check-list {
+  font-size: 18px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.check-list li {
+  border-top: 1px solid var(--line);
+  padding: 16px 0;
+}
+
+code {
+  background: #e7eeee;
+  border-radius: 4px;
+  color: var(--teal);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  padding: 2px 5px;
+}
+
+.pricing {
+  background: var(--paper);
+}
+
+.register {
+  padding-top: 0;
+}
+
+.register-panel {
+  align-items: center;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 32px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(260px, 0.7fr);
+  padding: clamp(24px, 5vw, 44px);
+}
+
+.register-panel p,
+.register-actions p {
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.register-actions {
+  align-items: flex-start;
+  display: grid;
+  gap: 14px;
+}
+
+.success-page {
+  padding-top: 150px;
+}
+
+.contact-line a,
+.site-footer a {
+  color: var(--green-dark);
+  font-weight: 750;
+}
+
+.plan {
+  display: flex;
+  flex-direction: column;
+}
+
+.plan.featured {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(31, 132, 80, 0.12);
+}
+
+.price {
+  color: var(--ink);
+  font-size: 38px;
+  font-weight: 850;
+  margin-bottom: 8px;
+}
+
+.price span {
+  color: var(--muted);
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.plan .button {
+  margin-top: auto;
+}
+
+pre {
+  background: #20262c;
+  border-radius: 8px;
+  color: #f7f7f1;
+  margin: 0;
+  overflow-x: auto;
+  padding: 24px;
+}
+
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 14px;
+  gap: 10px 18px;
+  justify-content: space-between;
+  padding: 28px clamp(20px, 5vw, 72px);
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+@media (max-width: 920px) {
+  .site-header {
+    position: static;
+  }
+
+  .hero {
+    min-height: auto;
+    padding-top: 78px;
+  }
+
+  .problem-grid,
+  .proof-grid,
+  .install-grid,
+  .register-panel,
+  .steps,
+  .plans {
+    grid-template-columns: 1fr;
+  }
+
+  .steps article,
+  .plan {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  nav {
+    display: none;
+  }
+
+  .hero {
+    gap: 28px;
+    padding-bottom: 40px;
+  }
+
+  .hero-subtitle,
+  .problem-grid > p,
+  .install-grid > div > p {
+    font-size: 18px;
+  }
+
+  .button {
+    width: 100%;
+  }
+}

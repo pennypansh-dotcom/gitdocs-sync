@@ -1,0 +1,12 @@
+source_lang: en
+target_langs:
+  - zh
+
+docs_dir: docs/
+output_dir: "i18n/{locale}/docusaurus-plugin-content-docs/current/"
+
+ignore:
+  - docs/changelog.md
+  - docs/internal/**
+
+dry_run: true

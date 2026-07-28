@@ -1,0 +1,2 @@
+customer_email,github_repo,plan,license_key,status,payment_status,source_language,target_languages,docs_framework,docs_limit,repo_limit,language_limit,branding_footer,paid_at,renews_at,stripe_customer_id,stripe_payment_link,support_notes
+pawsitiveme@example.com,https://github.com/acme/docs,Free,gds_free_202607_acme-docs_000000000000,free-active,not_required,en,zh,Docusaurus,30,1,1,on,,,,First dry-run key example
