@@ -190,43 +190,63 @@ This keeps the MVP predictable and prevents one huge Markdown file from consumin
 
 See `examples/docusaurus-demo`, `docs/github-test-repo-setup.md`, `docs/live-dry-run.md`, `docs/live-smoke-runbook.md`, and `docs/troubleshooting.md`.
 
-## How GitDocs Sync Compares
+## Why GitDocs Sync
 
-| | Manual | Crowdin / TMS | GitDocs Sync |
-|---|---|---|---|
-| Setup time | none | hours–days | ~3 min |
-| Who reviews | whoever remembers to | dedicated translators | anyone, via normal PR |
-| Cost model | your time | seats / word volume | per translated doc |
-| Re-translates unchanged content? | no (if you remember) | depends on config | no, by design |
-| Best fit | tiny docs, 1 language | big team, human translators | solo/small teams, technical docs |
+If your Docusaurus project has multi-language docs, you have four options. Here is how they compare for a typical team managing docs in 3 languages with ~100 Markdown files:
 
-GitDocs Sync is not a replacement for a translation management platform. If you have dedicated translators and a formal localization workflow, a TMS like Crowdin or Lokalise is still the right tool. GitDocs Sync is for teams that just want their Docusaurus docs to stop drifting out of sync across languages, and prefer reviewing translation changes through the same PR workflow they already use.
+| | Manual Translation | Crowdin / Transifex | Generic AI Translation API | GitDocs Sync |
+|---|---|---|---|---|
+| **Setup time** | 0 (already have humans) | 2–4 hours | 1–2 hours (write scripts) | 5 minutes (drop-in workflow file) |
+| **Per-update effort** | Hours (re-translate changed docs) | Open Crowdin, upload, wait for translators | Re-run scripts, fix broken code blocks | Zero — triggered by push |
+| **Markdown preservation** | Depends on translator | Often breaks code blocks and front matter | Breaks unless you write guards | Preserves front matter, code blocks, inline code, links ✅ |
+| **Translation Memory** | None (human memory) | Built-in (proprietary) | None (every call is cold) | Git-native TM — stored as Markdown in your repo, reusable across runs |
+| **Review workflow** | Manual PR review | Crowdin review UI | Manual PR review | Git-native PRs — same review flow your team already uses |
+| **Cost (100 docs, 3 langs)** | Free (labor) | $100–$300/month | ~$10/month (API calls) + script maintenance | Free (30 docs, 1 lang) / $19/month (Pro) |
+| **Vendor lock-in** | None | High (proprietary TM + workflow) | None (you own the scripts) | None — TM is Markdown in your repo, workflow file is standard GitHub Actions |
+
+**The short version:** Manual translation works for small teams but doesn't scale. Crowdin solves scale but locks you into a proprietary workflow and often breaks Markdown. DIY API scripts give you control but require ongoing maintenance and guarding every edge case. GitDocs Sync is built specifically for Docusaurus + GitHub — it knows Markdown structure, only translates what changed, and stays inside the PR workflow your team already uses.
+
+### Open Source
+
+GitDocs Sync is open source (MIT). You can read the source, fork it, and run it yourself. The GitHub Action in the Marketplace is the same code, with a license key to support development.
 
 ## FAQ
 
-### Does this replace a translation management platform for large teams?
+### Does GitDocs Sync replace human translators?
 
-No — if you have dedicated translators and a formal localization workflow, a TMS is still the right tool. This is for teams that don't have that and just want the docs to stop drifting.
+No. It produces AI-generated translation drafts that your team reviews through PRs, exactly like reviewing code. Think of it as an automatic first pass — your reviewers still control what gets merged.
 
-### What happens to code blocks and links?
+### What happens to code blocks and front matter?
 
-They're left untouched. Only the prose gets sent for translation; Markdown/MDX structure, front matter, and code fences are protected.
+GitDocs Sync detects and preserves them. Code blocks, inline code, YAML front matter, HTML tags, and URLs are never sent to the translation provider. Only Markdown paragraph text and headings are translated.
 
-### Does it re-translate the whole file every time?
+### Can I use my own LLM provider?
 
-No — that's the whole point. Only the changed paragraphs get sent for translation; unchanged content is skipped and translation memory covers repeats.
+Yes. GitDocs Sync supports any OpenAI-compatible chat completions API — set `GITDOCS_API_KEY`, `GITDOCS_API_BASE_URL`, and `GITDOCS_API_MODEL`. Works with OpenAI, DeepSeek, Claude, Moonshot/Kimi, Qwen, Zhipu, Ollama, and LM Studio.
 
-### Is it free for open source?
+### How is this different from just running a script that calls the DeepSeek API?
 
-Yes. Public repositories use GitDocs Sync for free. The Free plan covers up to 30 documents, 1 target language, and 1 repository. Pro and Team plans are available for larger needs.
+Three things: (1) GitDocs Sync only translates docs that actually changed — it diffs your repo and skips all unchanged files. (2) It preserves Markdown structure automatically — code blocks, front matter, links are not sent to the LLM. (3) Translation Memory means repeated phrases don't cost you tokens every run.
 
-### What languages work best?
+### What happens if the translation is wrong?
 
-DeepSeek handles Chinese translation natively. OpenAI covers all other languages. For languages with fewer training resources, a human review pass is recommended before publishing.
+Your team reviews every translation PR before merging — nothing enters your docs without a human clicking "Merge." If something looks off, you can comment on the PR, edit the file directly, or run `/gitdocs sync` again for that file.
 
-### Where does GitDocs Sync fit in the Docusaurus ecosystem?
+### Does it support languages other than Chinese?
 
-Docusaurus does not have an official i18n translation tool — the community is free to build tooling. GitDocs Sync fills that gap as a community-built GitHub Action that outputs directly into Docusaurus' standard `i18n/{locale}/docusaurus-plugin-content-docs/current/` directory structure.
+Yes. Chinese (zh) is the default and most tested target. Any language supported by your LLM provider works — set `target_langs` in `.gitdocs-sync.yml` (e.g. `ja`, `ko`, `fr`, `de`, `es`, `pt`).
+
+### How much does it cost?
+
+- **Free:** 30 source docs, 1 target language, 10,000 words per doc
+- **Pro:** $19/month — 150 source docs, 3 target languages, 20,000 words per doc
+- **Team:** $99/month — 1,000 source docs, 5 target languages, 30,000 words per doc
+
+All plans include unlimited runs, Translation Memory, and multi-provider support.
+
+### Is there a self-hosted option?
+
+The Action is open source (MIT). You can run your own fork without a license key if you don't need plan enforcement or support. The Marketplace listing and license key fund ongoing development.
 
 ## Development
 
