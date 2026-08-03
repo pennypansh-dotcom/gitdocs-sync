@@ -12,12 +12,10 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: github-pages
+  group: publish-website
   cancel-in-progress: true
 
 jobs:
@@ -34,24 +32,16 @@ jobs:
         run: npm run site:blog
       - name: Check generated website
         run: node --test test/blog.test.js test/site.test.js
-      - uses: actions/configure-pages@v5
       - name: Prepare public website folder
         run: |
           mkdir _site
           cp -R site/. _site/
           rm -rf _site/blog/posts
           rm -f _site/blog/README.md
-      - uses: actions/upload-pages-artifact@v3
+      - name: Publish to the existing GitHub Pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: _site
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Publish website
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./_site
+          cname: pawsitivetime.com
