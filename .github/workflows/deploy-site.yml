@@ -1,0 +1,57 @@
+name: Publish website and blog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "scripts/build-blog.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/deploy-site.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Generate blog pages
+        run: npm run site:blog
+      - name: Check generated website
+        run: node --test test/blog.test.js test/site.test.js
+      - uses: actions/configure-pages@v5
+      - name: Prepare public website folder
+        run: |
+          mkdir _site
+          cp -R site/. _site/
+          rm -rf _site/blog/posts
+          rm -f _site/blog/README.md
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Publish website
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,4 +1,4 @@
-name: GitDocs Sync - Docusaurus i18n Translation
+name: GitDocs Sync - Auto-sync Docusaurus docs translations
 description: "AI-powered Docusaurus i18n translation. Diff-based: changed content only. Translation memory. Free for open source."
 branding:
   icon: languages

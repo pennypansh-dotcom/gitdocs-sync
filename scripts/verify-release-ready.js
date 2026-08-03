@@ -52,7 +52,7 @@ if (/main:\s*dist\/index\.js/.test(action)) {
 } else {
   fail("action.yml must point to dist/index.js");
 }
-if (/branding:\s*\n\s*icon:\s*languages\n\s*color:\s*green/.test(action)) {
+if (/branding:\s*\r?\n\s*icon:\s*languages\r?\n\s*color:\s*green/.test(action)) {
   pass("action.yml includes Marketplace branding");
 } else {
   fail("action.yml must include Marketplace branding");

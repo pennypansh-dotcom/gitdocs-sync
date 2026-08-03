@@ -5,6 +5,7 @@
   "description": "Git-native Docusaurus documentation translation sync MVP.",
   "scripts": {
     "build": "ncc build src/action.js -o dist --source-map",
+    "site:blog": "node scripts/build-blog.mjs",
     "payment:links": "node scripts/configure-payment-links.js",
     "site:url": "node scripts/configure-site-url.js",
     "launch:configure": "node scripts/configure-launch-day.js",
@@ -15,7 +16,12 @@
     "test": "node --test test/*.test.js"
   },
   "dependencies": {
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "rehype-stringify": "^10.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "unified": "^11.0.5"
   },
   "engines": {
     "node": ">=20"
