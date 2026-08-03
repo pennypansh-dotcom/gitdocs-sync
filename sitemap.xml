@@ -1,24 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  <url>
-    <loc>https://pawsitivetime.com/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://pawsitivetime.com/" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pawsitivetime.com/zh.html" />
-  </url>
-  <url>
-    <loc>https://pawsitivetime.com/zh.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://pawsitivetime.com/" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pawsitivetime.com/zh.html" />
-  </url>
-  <url>
-    <loc>https://pawsitivetime.com/payment-success.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://pawsitivetime.com/payment-success.html" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pawsitivetime.com/zh-payment-success.html" />
-  </url>
-  <url>
-    <loc>https://pawsitivetime.com/zh-payment-success.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://pawsitivetime.com/payment-success.html" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://pawsitivetime.com/zh-payment-success.html" />
-  </url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://pawsitivetime.com/</loc></url>
+  <url><loc>https://pawsitivetime.com/zh.html</loc></url>
+  <url><loc>https://pawsitivetime.com/payment-success.html</loc></url>
+  <url><loc>https://pawsitivetime.com/zh-payment-success.html</loc></url>
+  <url><loc>https://pawsitivetime.com/blog/</loc></url>
+  <url><loc>https://pawsitivetime.com/blog/docusaurus-translation-tools-comparison-2026.html</loc></url>
 </urlset>
